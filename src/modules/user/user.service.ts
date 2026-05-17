@@ -21,18 +21,22 @@ const createUserIntoDB = async (payload: typeofUser) => {
 //ALL USERS --GET
 const getAllusersfromDB = async () => {
   const result = await pool.query(`SELECT * FROM users`);
-  return result;
+  const users = result.rows.map(({password,...rest})=>rest);
+  return users;
 };
 
 //SINGLE USER --GET
 const getSingleUser = async (id: string) => {
   const result = await pool.query(`SELECT * FROM users WHERE id=$1`, [id]);
+  delete result.rows[0].password;
+
   return result;
 };
 
 //UPDATE USER --PUT
 const updateUserInfofromDB = async (payload: typeofUser, id: string) => {
   const { name, is_active, password, age } = payload;
+    const hashPassword = await bcrypt.hash(password, 10);
   const result = await pool.query(
     `UPDATE users SET
         name=COALESCE($1, name),
@@ -40,8 +44,11 @@ const updateUserInfofromDB = async (payload: typeofUser, id: string) => {
         age=COALESCE($3, age),
         is_active=COALESCE($4, is_active)
       WHERE id=$5 RETURNING *`,
-    [name, password, age, is_active, id],
+    [name, hashPassword, age, is_active, id],
   );
+    delete result.rows[0].password;
+
+
   return result;
 };
 

@@ -7,6 +7,7 @@ import express, {
 import { pool } from "./db";
 import { userRoute } from "./modules/user/user.routes";
 import { profileRouter } from "./modules/profile/profile.routes";
+import { authRoute } from "./modules/auth/auth.route";
 
 const app: Application = express();
 
@@ -27,5 +28,9 @@ app.use("/api/users", userRoute);
 
 //  profie
 app.use("/api/profile", profileRouter );
+
+// auth
+app.use("/api/auth",authRoute );
+
 
 export default app;
