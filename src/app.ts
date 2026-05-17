@@ -6,6 +6,7 @@ import express, {
 
 import { pool } from "./db";
 import { userRoute } from "./modules/user/user.routes";
+import { profileRouter } from "./modules/profile/profile.routes";
 
 const app: Application = express();
 
@@ -23,5 +24,8 @@ app.get("/", (req: Request, res: Response) => {
 
 //  user
 app.use("/api/users", userRoute);
+
+//  profie
+app.use("/api/profile", profileRouter );
 
 export default app;
